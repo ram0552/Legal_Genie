@@ -1,0 +1,123 @@
+import { Sparkles, FileText, AlertTriangle, Scale, Lightbulb, Loader2, RefreshCw } from 'lucide-react';
+
+export default function CaseBriefCard({ brief, loading, onRegenerate }) {
+    if (loading) {
+        return (
+            <div className="bg-white rounded-xl shadow-sm p-8">
+                <div className="flex flex-col items-center justify-center space-y-4">
+                    <div className="relative">
+                        <Sparkles className="w-12 h-12 text-primary-500 animate-pulse" />
+                        <div className="absolute inset-0 animate-ping">
+                            <Sparkles className="w-12 h-12 text-primary-300 opacity-50" />
+                        </div>
+                    </div>
+                    <p className="text-slate-600 font-medium">Generating AI Brief...</p>
+                    <p className="text-sm text-slate-400">Analyzing case content with RAG</p>
+                </div>
+            </div>
+        );
+    }
+
+    if (!brief) {
+        return (
+            <div className="bg-white rounded-xl shadow-sm p-8">
+                <div className="flex flex-col items-center justify-center text-slate-400">
+                    <Sparkles className="w-12 h-12 mb-4 opacity-30" />
+                    <p className="text-lg">No brief generated yet</p>
+                    <p className="text-sm mt-1">Click "Generate Brief" to create one</p>
+                </div>
+            </div>
+        );
+    }
+
+    const sections = [
+        {
+            key: 'facts',
+            title: 'Facts of the Case',
+            icon: FileText,
+            color: 'bg-blue-50 border-blue-200 text-blue-800'
+        },
+        {
+            key: 'issues',
+            title: 'Legal Issues',
+            icon: AlertTriangle,
+            color: 'bg-amber-50 border-amber-200 text-amber-800'
+        },
+        {
+            key: 'verdict',
+            title: 'Verdict',
+            icon: Scale,
+            color: 'bg-green-50 border-green-200 text-green-800'
+        },
+        {
+            key: 'reasoning',
+            title: 'Ratio Decidendi',
+            icon: Lightbulb,
+            color: 'bg-purple-50 border-purple-200 text-purple-800'
+        }
+    ];
+
+    return (
+        <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+            {/* Header */}
+            <div className="p-4 bg-gradient-to-r from-primary-600 to-primary-700 flex items-center justify-between">
+                <div className="flex items-center gap-2 text-white">
+                    <Sparkles className="w-5 h-5" />
+                    <h2 className="font-semibold">AI-Generated Case Brief</h2>
+                </div>
+                {onRegenerate && (
+                    <button
+                        onClick={onRegenerate}
+                        className="flex items-center gap-1 px-3 py-1.5 bg-white/20 hover:bg-white/30 text-white text-sm rounded-lg transition-colors"
+                    >
+                        <RefreshCw className="w-3.5 h-3.5" />
+                        Regenerate
+                    </button>
+                )}
+            </div>
+
+            {/* Brief Sections */}
+            <div className="p-4 space-y-4">
+                {sections.map(({ key, title, icon: Icon, color }) => (
+                    <div
+                        key={key}
+                        className={`p-4 rounded-lg border ${color}`}
+                    >
+                        <div className="flex items-center gap-2 mb-2">
+                            <Icon className="w-4 h-4" />
+                            <h3 className="font-semibold">{title}</h3>
+                        </div>
+                        <p className="text-sm leading-relaxed opacity-90">
+                            {brief[key] || 'Not available'}
+                        </p>
+                    </div>
+                ))}
+
+                {/* Key Points */}
+                {brief.keyPoints && brief.keyPoints.length > 0 && (
+                    <div className="p-4 rounded-lg border border-slate-200 bg-slate-50">
+                        <h3 className="font-semibold mb-2 text-slate-700 flex items-center gap-2">
+                            <Lightbulb className="w-4 h-4 text-amber-500" />
+                            Key Points
+                        </h3>
+                        <ul className="space-y-1">
+                            {brief.keyPoints.map((point, i) => (
+                                <li key={i} className="text-sm text-slate-600 flex items-start gap-2">
+                                    <span className="text-primary-500 mt-1">•</span>
+                                    {point}
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+            </div>
+
+            {/* Footer */}
+            <div className="px-4 py-3 bg-slate-50 border-t border-slate-100">
+                <p className="text-xs text-slate-400 text-center">
+                    Generated by LegalGenie AI • Based on RAG from case text
+                </p>
+            </div>
+        </div>
+    );
+}
