@@ -7,7 +7,7 @@ export default defineConfig({
         port: 5173,
         proxy: {
             '/api': {
-                target: 'http://localhost:5000',
+                target: 'https://gen-ai-1-dcba.onrender.com',
                 changeOrigin: true
             }
         }
