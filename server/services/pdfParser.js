@@ -34,3 +34,4 @@ export const cleanText = (text) => {
 };
 
 export default { parsePDF, cleanText };
+
